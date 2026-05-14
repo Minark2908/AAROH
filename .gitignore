@@ -1,0 +1,43 @@
+# Environment
+.env
+.env.*
+!.env.example
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# --- Legacy duplicate Next app (use `ui/`) ---
+frontend/
+
+# --- Python / ml-service ---
+ml-service/venv/
+ml-service/.venv/
+ml-service/__pycache__/
+ml-service/**/__pycache__/
+ml-service/**/*.py[cod]
+ml-service/.env
+ml-service/*.log
+
+# User uploads (keep directory with .gitkeep only)
+ml-service/uploads/*
+!ml-service/uploads/.gitkeep
+
+# Large / reproducible artifacts (optional: use Git LFS for weights)
+ml-service/model/*.pth
+training/processed_dataset/
+training/*.zip
+
+# --- Next.js (`ui/`) ---
+ui/node_modules/
+ui/.next/
+ui/out/
+ui/.env
+ui/.env.local
+ui/.env.*.local
+ui/npm-debug.log*
+ui/tsconfig.tsbuildinfo

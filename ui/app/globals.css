@@ -1,0 +1,88 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* New Color System */
+  --color-primary: #166534; /* Deep Green */
+  --color-primary-dark: #14532d;
+  --color-accent: #f59e0b; /* Warm Yellow / Saffron Accent */
+  --color-soil: #78350f; /* Earthy Brown */
+  --color-destructive: #ef4444;
+  
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-border: var(--border);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-merriweather), ui-serif, Georgia, serif;
+  --font-heading: var(--font-merriweather), ui-serif, Georgia, serif;
+  
+  --radius-xl: 16px;
+  --radius-lg: 12px;
+  --radius-md: 8px;
+  
+  --shadow-soft: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+  --shadow-soft-dark: 0 4px 6px -1px rgb(0 0 0 / 0.2), 0 2px 4px -2px rgb(0 0 0 / 0.2);
+  --shadow-hover: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.05); /* Increased lift shadow */
+  --shadow-hover-dark: 0 20px 25px -5px rgb(0 0 0 / 0.4), 0 8px 10px -6px rgb(0 0 0 / 0.2);
+  
+  --shadow-card: var(--shadow-soft);
+  --shadow-card-hover: var(--shadow-hover);
+}
+
+@layer base {
+  :root {
+    --background: #fafaf9; /* Soft off-white / light beige */
+    --foreground: #1c1917; /* Dark text for contrast */
+    --card: #FFFFFF;
+    --card-foreground: #1c1917;
+    --border: #e7e5e4;
+    --muted: #f5f5f4;
+    --muted-foreground: #78716c;
+  }
+  
+  .dark {
+    --background: #1c1917; /* Very dark earthy tone */
+    --foreground: #fafaf9;
+    --card: #292524;
+    --card-foreground: #fafaf9;
+    --border: #44403c;
+    --muted: #292524;
+    --muted-foreground: #a8a29e;
+  }
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    @apply antialiased transition-colors duration-300;
+  }
+}
+
+@layer utilities {
+  .glass-card, .glass-panel {
+    @apply bg-white/70 dark:bg-black/50 backdrop-blur-sm border border-gray-100/80 dark:border-white/10 shadow-md;
+  }
+
+  .hover-lift {
+    @apply hover:scale-[1.01] hover:shadow-xl transition-all duration-200 ease-in-out;
+  }
+  
+  .bg-gradient-farm {
+    @apply bg-gradient-to-br from-[#166534]/10 to-[#16a34a]/10 dark:from-[#166534]/20 dark:to-[#16a34a]/20;
+  }
+  
+  .bg-gradient-soil {
+    @apply bg-gradient-to-br from-[#78350f]/10 to-[#f59e0b]/10 dark:from-[#78350f]/20 dark:to-[#f59e0b]/20;
+  }
+}
