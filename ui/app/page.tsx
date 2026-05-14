@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import {
   Sprout,
   ScanSearch,
@@ -16,11 +17,17 @@ import {
   ShieldCheck,
   ChevronRight,
   Leaf,
+  User,
+  LogOut,
+  LayoutDashboard,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function LandingPage() {
   const [scrolled, setScrolled] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userName, setUserName] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -29,6 +36,30 @@ export default function LandingPage() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    const token = localStorage.getItem("aaroh_token");
+    const name = localStorage.getItem("aaroh_user_name");
+    const role = localStorage.getItem("aaroh_role");
+    if (token && token !== "undefined" && token !== "null" && token.trim().length > 0) {
+      setIsLoggedIn(true);
+      setUserName(name || role || "User");
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("aaroh_token");
+    localStorage.removeItem("aaroh_role");
+    localStorage.removeItem("aaroh_user_name");
+    localStorage.removeItem("aaroh_user_id");
+    const cookies = ["aaroh_token", "aaroh_role"];
+    cookies.forEach((name) => {
+      document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+    });
+    setIsLoggedIn(false);
+    setUserName(null);
+    router.refresh();
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground font-sans relative overflow-hidden">
@@ -63,19 +94,50 @@ export default function LandingPage() {
             </span>
           </Link>
           <div className="flex items-center gap-3">
-            <Link href="/login">
-              <Button
-                variant="ghost"
-                className="hidden sm:inline-flex rounded-full px-5 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-zinc-800 font-medium"
-              >
-                Log in
-              </Button>
-            </Link>
-            <Link href="/signup">
-              <Button className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white rounded-full px-6 shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 transition-all hover:-translate-y-0.5 border-none font-semibold">
-                Get Started
-              </Button>
-            </Link>
+            {isLoggedIn ? (
+              <>
+                <Link href="/dashboard">
+                  <Button
+                    variant="ghost"
+                    className="hidden sm:inline-flex rounded-full px-5 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-zinc-800 font-medium gap-2"
+                  >
+                    <LayoutDashboard className="h-4 w-4" />
+                    Dashboard
+                  </Button>
+                </Link>
+                <div className="flex items-center gap-2.5 pl-2 pr-1 py-1 rounded-full bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200/60 dark:border-emerald-700/40">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#3F7F5A] to-emerald-500 flex items-center justify-center shadow-sm">
+                    <User className="h-4 w-4 text-white" />
+                  </div>
+                  <span className="text-sm font-semibold text-slate-700 dark:text-slate-200 max-w-[120px] truncate">
+                    {userName}
+                  </span>
+                  <button
+                    onClick={handleLogout}
+                    className="w-7 h-7 rounded-full flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                    title="Log out"
+                  >
+                    <LogOut className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <Link href="/login">
+                  <Button
+                    variant="ghost"
+                    className="hidden sm:inline-flex rounded-full px-5 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-zinc-800 font-medium"
+                  >
+                    Log in
+                  </Button>
+                </Link>
+                <Link href="/signup">
+                  <Button className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white rounded-full px-6 shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 transition-all hover:-translate-y-0.5 border-none font-semibold">
+                    Get Started
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </nav>
@@ -202,7 +264,7 @@ export default function LandingPage() {
               </p>
 
               <div className="flex flex-col sm:flex-row items-start gap-4 mb-8">
-                <Link href="/dashboard/pest-detection" className="w-full sm:w-auto">
+                <Link href={isLoggedIn ? "/dashboard/pest-detection" : "/login"} className="w-full sm:w-auto">
                   <Button
                     size="lg"
                     className="w-full h-14 text-white px-8 rounded-full font-semibold text-base group border-none transition-all duration-300 hover:-translate-y-1.5 hover:scale-[1.02]"
@@ -216,7 +278,7 @@ export default function LandingPage() {
                     <ChevronRight className="ml-2 h-5 w-5 group-hover:translate-x-1.5 transition-transform duration-300" />
                   </Button>
                 </Link>
-                <Link href="/dashboard" className="w-full sm:w-auto">
+                <Link href={isLoggedIn ? "/dashboard" : "/login"} className="w-full sm:w-auto">
                   <Button
                     size="lg"
                     variant="outline"
@@ -268,7 +330,7 @@ export default function LandingPage() {
                   border: "1.5px solid rgba(255,255,255,0.40)",
                   boxShadow:
                     "0 32px 80px rgba(0,0,0,0.17),0 8px 24px rgba(63,127,90,0.13),inset 0 1.5px 0 rgba(255,255,255,0.60)",
-                  animation: "floatCard 7s ease-in-out infinite",
+                  transform: "perspective(1200px) rotateY(-4deg) rotateX(1.5deg)",
                 }}
               >
                 <Image
@@ -325,7 +387,6 @@ export default function LandingPage() {
 
               <div
                 className="absolute top-[6%] right-[-3%] w-44 bg-white/92 dark:bg-zinc-950/92 backdrop-blur-md rounded-xl p-3.5 shadow-xl border border-slate-100 dark:border-white/10 z-10"
-                style={{ animation: "floatPill 5s ease-in-out 1s infinite" }}
               >
                 <div className="flex items-center gap-2.5">
                   <div className="w-8 h-8 rounded-full bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center shrink-0">
@@ -340,7 +401,6 @@ export default function LandingPage() {
 
               <div
                 className="absolute bottom-[24%] left-[-4%] w-48 bg-white/92 dark:bg-zinc-950/92 backdrop-blur-md rounded-xl p-3.5 shadow-xl border border-slate-100 dark:border-white/10 z-10"
-                style={{ animation: "floatPill 4.5s ease-in-out 0.5s infinite" }}
               >
                 <div className="flex items-center gap-2.5">
                   <div className="w-8 h-8 rounded-full bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center shrink-0">
@@ -367,14 +427,7 @@ export default function LandingPage() {
           from { opacity: 0; transform: translateX(28px); }
           to   { opacity: 1; transform: translateX(0); }
         }
-        @keyframes floatCard {
-          0%,100% { transform: perspective(1200px) rotateY(-4deg) rotateX(1.5deg) translateY(0px); }
-          50%      { transform: perspective(1200px) rotateY(-4deg) rotateX(1.5deg) translateY(-10px); }
-        }
-        @keyframes floatPill {
-          0%,100% { transform: translateY(0px); }
-          50%      { transform: translateY(-7px); }
-        }
+
       `}</style>
 
       {/* ============================================================ */}
