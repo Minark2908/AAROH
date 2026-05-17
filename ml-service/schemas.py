@@ -82,6 +82,24 @@ class AdminLoginRequest(BaseModel):
     username: str
     password: str
 
+class ResetPasswordRequest(BaseModel):
+    email: str
+    new_password: str
+
+    @field_validator("email")
+    @classmethod
+    def normalize_identifier(cls, v: str):
+        return (v or "").strip().lower()
+
+    @field_validator("new_password")
+    @classmethod
+    def validate_password(cls, v: str):
+        from security_config import validate_password_strength
+        is_valid, error_msg = validate_password_strength(v)
+        if not is_valid:
+            raise ValueError(error_msg)
+        return v
+
 class FlagUserRequest(BaseModel):
     note: str
 

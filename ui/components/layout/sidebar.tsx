@@ -88,10 +88,11 @@ export function Sidebar({ className }: { className?: string }) {
             <Sprout className="h-20 w-20" />
           </div>
           <h4 className="font-semibold text-sm mb-1 z-10 relative">{t("sidebar.support_title")}</h4>
-          <p className="text-xs opacity-80 mb-3 z-10 relative">{t("sidebar.support_desc")}</p>
-          <button className="text-xs font-semibold bg-[var(--color-primary)] text-white px-3 py-1.5 rounded-lg w-full hover:shadow-card-hover hover:-translate-y-0.5 transition-all z-10 relative">
+          <p className="text-xs opacity-80 mb-1 z-10 relative">modiminark2903@gmail.com</p>
+          <p className="text-xs opacity-80 mb-3 z-10 relative">+91 9106384726</p>
+          <a href="mailto:modiminark2903@gmail.com" className="block text-center text-xs font-semibold bg-[var(--color-primary)] text-white px-3 py-1.5 rounded-lg w-full hover:shadow-card-hover hover:-translate-y-0.5 transition-all z-10 relative">
             {t("sidebar.support_cta")}
-          </button>
+          </a>
         </div>
       </div>
     </aside>

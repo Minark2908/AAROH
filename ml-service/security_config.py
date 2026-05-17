@@ -229,7 +229,7 @@ def validate_password_strength(password: str) -> tuple[bool, str]:
     Validates password strength according to NIST guidelines.
     
     Requirements:
-    - Minimum 12 characters
+    - Minimum 8 characters
     - At least one uppercase letter
     - At least one lowercase letter
     - At least one digit
@@ -241,8 +241,8 @@ def validate_password_strength(password: str) -> tuple[bool, str]:
     Returns:
         (is_valid, error_message)
     """
-    if len(password) < 12:
-        return False, "Password must be at least 12 characters"
+    if len(password) < 8:
+        return False, "Password must be at least 8 characters"
     
     if not re.search(r'[A-Z]', password):
         return False, "Password must contain at least one uppercase letter"

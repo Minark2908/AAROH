@@ -7,7 +7,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 from database import get_db
 from models import User, Settings
-from schemas import UserCreate, UserResponse, Token, FarmerLoginRequest, AdminLoginRequest
+from schemas import UserCreate, UserResponse, Token, FarmerLoginRequest, AdminLoginRequest, ResetPasswordRequest
 from services.auth_service import get_password_hash, verify_password, create_access_token
 from services.rate_limiter import check_rate_limit, record_failed_attempt, reset_attempts, get_client_ip
 from security_config import SecurityEventLogger
@@ -225,3 +225,43 @@ def admin_login(request: Request, body: AdminLoginRequest, db: Session = Depends
     }
     logger.debug("Admin login successful for user_id=%s", admin_user.id)
     return response
+
+
+@router.post("/reset-password-direct")
+def reset_password_direct(request: Request, body: ResetPasswordRequest, db: Session = Depends(get_db)):
+    ip_addr = get_client_ip(request)
+    identifier = f"{ip_addr}_reset_password"
+
+    check_rate_limit(identifier)
+
+    login_id = (body.email or "").strip().lower()
+    phone_norm = "".join(ch for ch in login_id if ch.isdigit() or ch == "+")
+
+    user = (
+        db.query(User)
+        .filter(or_(User.email == login_id, User.phone == phone_norm, User.phone == login_id))
+        .first()
+    )
+    if not user:
+        record_failed_attempt(identifier)
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+
+    if getattr(user, "is_disabled", False):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Your account has been disabled. Please contact an administrator."
+        )
+
+    try:
+        user.password_hash = get_password_hash(body.new_password)
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Could not reset password")
+
+    reset_attempts(identifier)
+    
+    from utils.logger import log_activity
+    log_activity(db, user.id, "PASSWORD_RESET", details=f"User reset password from {ip_addr}", level="INFO", commit=True)
+    
+    return {"message": "Password reset successfully"}
