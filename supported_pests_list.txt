@@ -1,0 +1,52 @@
+AAROH Project - Supported Pests for Detection
+=============================================
+
+This list represents the 40 specific pest categories the AI model (aaroh_model.pth) is trained to detect.
+
+Rice Pests:
+- Rice leaf roller
+- Rice leaf caterpillar
+- Rice leafhopper
+- Asiatic rice borer
+- Yellow rice borer
+- Rice gall midge
+- Paddy stem maggot
+- Brown plant hopper
+- White backed plant hopper
+- Rice Stemfly
+
+General/Broad-spectrum Pests:
+- Army worm
+- Black cutworm
+- Large cutworm
+- Yellow cutworm
+- Aphids
+- Red spider
+- Longlegged spider mite
+- Thrips
+- Grain spreader thrips
+- Grub
+- Flea beetle
+- Blister beetle
+- Prodenia litura
+
+Beet & Alfalfa Pests:
+- Beet fly
+- Beet weevil
+- Alfalfa plant bug
+- Therioaphis maculata Buckton
+- Odontothrips loti
+
+Vineyard/Citrus & Other Specialized Pests:
+- Viteus vitifoliae (Grape phylloxera)
+- Pseudococcus comstocki Kuwana (Comstock mealybug)
+- Ampelophaga
+- Lycorma delicatula (Spotted lanternfly)
+- Cicadella viridis
+- Erythroneura apicalis
+- Phyllocnistis citrella Stainton (Citrus leafminer)
+- Toxoptera aurantii (Black citrus aphid)
+- Lawana imitata Melichar
+- Salurnis marginella Guerr
+- Deporaus marginatus Pascoe
+- Limacodidae (Slug caterpillar moths)
